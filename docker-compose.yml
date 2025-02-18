@@ -36,6 +36,31 @@ services:
         networks:
             ianseo-local:
 
+    backup:
+        container_name: backup
+        image: fradelg/mysql-cron-backup
+        depends_on:
+            - db
+        volumes:
+            - ./backup:/backup
+            - ${VOLUME_PATH}/backup/latest.${DATABASE_NAME}.sql:/docker-entrypoint-initdb.d/database.sql
+        environment:
+            - MYSQL_HOST=db
+            - MYSQL_USER=ianseo
+            - MYSQL_PASS=ianseo
+            - MAX_BACKUPS=100
+            - INIT_BACKUP=1
+            # Every day at 03:00
+            - CRON_TIME=* * * * 10
+            - USE_PLAIN_SQL=true
+            - EXIT_BACKUP=true
+            - INIT_RESTORE_LATEST=true
+            # As of MySQL 8.0.21 this is needed
+            - MYSQLDUMP_OPTS=--no-tablespaces
+        restart: unless-stopped
+        networks:
+            ianseo-local:
+
 volumes:
     db-dir:
         external: false

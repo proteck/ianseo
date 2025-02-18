@@ -1,4 +1,4 @@
-# pj1004/ianseo - docker-compose build
+# ianseo - docker-compose build
 
 ## Docker Build for World Archery IANSEO System
 
